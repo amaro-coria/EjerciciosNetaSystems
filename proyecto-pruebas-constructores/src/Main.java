@@ -1,6 +1,15 @@
 
-public class Main {
 
+
+/**
+ * @author alfre
+ *
+ */
+public class Main {
+/**
+ * 
+ * @param args
+ */
 	public static void main(String[] args) {
 		System.out.println("Inicio de programa");
 		System.out.println("##########################");
