@@ -1,6 +1,15 @@
 
-public class Main {
 
+
+/**
+ * @author alfre
+ *
+ */
+public class Main {
+/**
+ * 
+ * @param args
+ */
 	public static void main(String[] args) {
 		System.out.println("Inicio de programa");
 		System.out.println("##########################");
@@ -11,8 +20,9 @@ public class Main {
 		Usuario u03 = new Usuario("Jorge", 3, 29, 'm', 3, "amaro.coria@gmail.com", "5540812022");
 		u03.setNombre("");
 		String nombreRecuperado = u03.getNombre();
-		System.out.println("##########################");
+		System.out.println("##############");
 		System.out.println("Prueba finalizada");
+		
 	}
 	
 }
