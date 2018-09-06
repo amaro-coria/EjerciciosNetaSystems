@@ -1,21 +1,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-	http://www.springframework.org/schema/beans/spring-beans.xsd">
-
-    <bean id="javaLanguage" class="net.netasystems.business.JavaLanguage">
-    </bean>
-
-    <bean id="perlLanguage" class="net.netasystems.business.PerlLanguaje">
-        <property name="descriptionLanguage" value="Perl, usando descripcion desde XML!"/>
-    </bean>
-
-    <bean id="amaroProgrammer" class="net.netasystems.business.Amaro" >
-        <constructor-arg ref="perlLanguage"/>
-    </bean>
-
-    <bean id="masterProgrammer" class="net.netasystems.business.MasterProgrammer" >
-        <property name="languaje" ref="javaLanguage" />
-    </bean>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+    
+	<context:annotation-config/>
+	<context:component-scan base-package="net.netasystems.business"></context:component-scan>  
 
 </beans>
