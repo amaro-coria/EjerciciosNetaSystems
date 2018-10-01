@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "catalogo_general", schema = "neta_schema", catalog = "neta_db")
+@Table(name = "catalogo_general")
 public class CatalogoGeneral {
     private int idCatalogo;
     private Integer idTipoCatalogo;
@@ -17,8 +17,6 @@ public class CatalogoGeneral {
     private Date fchCrea;
     private String usrModi;
     private Date fchModi;
-    private Collection<Cliente> clientesByIdCatalogo;
-    private Collection<IdentificacionOficial> identificacionOficialsByIdCatalogo;
 
     @Id
     @Column(name = "id_catalogo")
@@ -133,22 +131,5 @@ public class CatalogoGeneral {
         return Objects.hash(idCatalogo, idTipoCatalogo, valCatalogo, descCatalogo, idEstatus, usrCrea, fchCrea, usrModi, fchModi);
     }
 
-    @OneToMany(mappedBy = "catalogoGeneralByIdEstatus")
-    public Collection<Cliente> getClientesByIdCatalogo() {
-        return clientesByIdCatalogo;
-    }
-
-    public void setClientesByIdCatalogo(Collection<Cliente> clientesByIdCatalogo) {
-        this.clientesByIdCatalogo = clientesByIdCatalogo;
-    }
-
-    @OneToMany(mappedBy = "catalogoGeneralByIdEstatus")
-    public Collection<IdentificacionOficial> getIdentificacionOficialsByIdCatalogo() {
-        return identificacionOficialsByIdCatalogo;
-    }
-
-    public void setIdentificacionOficialsByIdCatalogo(Collection<IdentificacionOficial> identificacionOficialsByIdCatalogo) {
-        this.identificacionOficialsByIdCatalogo = identificacionOficialsByIdCatalogo;
-    }
 
 }

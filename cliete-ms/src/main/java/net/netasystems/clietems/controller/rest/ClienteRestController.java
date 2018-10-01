@@ -10,12 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/v1/cliente")
@@ -51,6 +50,68 @@ public class ClienteRestController {
             log.error("Trace: ", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @RequestMapping(value = "/findAllByEmail/{email}", method = RequestMethod.GET
+                    , produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<List<Cliente>> findAllByEmail(@PathVariable String email){
+        try{
+            List<Cliente> list = clienteDAO.findAllByEmailCliente(email);
+            if(list == null || list.isEmpty()){
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(list, HttpStatus.OK);
+        }catch (Exception e){
+            log.error("Error en findAllByEmail con mensaje: {}", e.getMessage());
+            log.error("Traza: {}" , e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/findById/{id}")
+    public ResponseEntity<Cliente> findById(@PathVariable Integer id){
+        try{
+            Optional<Cliente> found = clienteDAO.findById(id);
+            if(found.isPresent()){
+                return new ResponseEntity<>(found.get(), HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch(Exception e){
+            log.error("Error en findById con mensaje: {}", e.getMessage());
+            log.error("Traza del error: {}", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/fetchActive", method = RequestMethod.GET
+                    , produces = MediaType.APPLICATION_JSON_UTF8_VALUE   )
+    public ResponseEntity<List<Cliente>> findActivos(){
+        //TODO mejorar el definir cuales son activos
+        final int idActivo = 1;
+        try{
+            List<Cliente> listaActivos = clienteDAO
+                    .findAllByCatalogoGeneralIdCatalogo(idActivo);
+            for (Cliente c :
+                    listaActivos) {
+                log.info("Cliente: {}", c);
+            }
+            if(listaActivos == null || listaActivos.isEmpty()){
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(listaActivos, HttpStatus.OK);
+        }catch(Exception e){
+            log.error("Error en findActivos con mensaje: {}", e.getMessage());
+            log.error("Traza: {}", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @RequestMapping(value = "/add", method = RequestMethod.POST
+            , consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<ClienteDTO> save(@RequestBody ClienteDTO clienteDTO){
+
     }
 
 

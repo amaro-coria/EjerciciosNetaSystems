@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "identificacion_oficial", schema = "neta_schema", catalog = "neta_db")
+@Table(name = "identificacion_oficial")
 public class IdentificacionOficial {
     private int idIdentificacion;
     private int idTipoIdentificacion;

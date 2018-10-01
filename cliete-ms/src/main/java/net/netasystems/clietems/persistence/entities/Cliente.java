@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-@Table(name = "cliente", schema = "public")
+@Table(name = "cliente")
 public class Cliente {
     private int idCliente;
     private String nombreCliente;
@@ -19,7 +19,7 @@ public class Cliente {
     private java.util.Date fchCrea;
     private String usrModi;
     private java.util.Date fchModi;
-    private CatalogoGeneral catalogoGeneralByIdEstatus;
+    private CatalogoGeneral catalogoGeneral;
     @Id
     @Column(name = "id_cliente")
     public int getIdCliente() {
@@ -157,11 +157,11 @@ public class Cliente {
 
     @ManyToOne
     @JoinColumn(name = "id_estatus", referencedColumnName = "id_catalogo")
-    public CatalogoGeneral getCatalogoGeneralByIdEstatus() {
-        return catalogoGeneralByIdEstatus;
+    public CatalogoGeneral getCatalogoGeneral() {
+        return catalogoGeneral;
     }
 
-    public void setCatalogoGeneralByIdEstatus(CatalogoGeneral catalogoGeneralByIdEstatus) {
-        this.catalogoGeneralByIdEstatus = catalogoGeneralByIdEstatus;
+    public void setCatalogoGeneral(CatalogoGeneral catalogoGeneral) {
+        this.catalogoGeneral = catalogoGeneral;
     }
 }

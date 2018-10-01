@@ -13,7 +13,7 @@ public class ClienteDTO implements Serializable {
     private String apellidoPatCliente;
     private String apellidoMatCliente;
     private String emailCliente;
-    private Date fnacCliente;
+    //private Date fnacCliente;
     private String celCliente;
 
 }
