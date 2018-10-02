@@ -3,6 +3,7 @@ package net.netasystems.clietems.controller.rest;
 
 import net.netasystems.clietems.dto.ClienteDTO;
 import net.netasystems.clietems.persistence.dao.ClienteDAO;
+import net.netasystems.clietems.persistence.entities.CatalogoGeneral;
 import net.netasystems.clietems.persistence.entities.Cliente;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.ws.Response;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +55,62 @@ public class ClienteRestController {
         }
     }
 
+    @RequestMapping(value = "/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+                    , consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<ClienteDTO> addCliente(@RequestBody ClienteDTO dto){
+        if(dto == null || dto.getEmailCliente() == null || dto.getCelCliente() == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Cliente cliente = new Cliente();
+        cliente.setApellidoMatCliente(dto.getApellidoMatCliente());
+        cliente.setApellidoPatCliente(dto.getApellidoPatCliente());
+        cliente.setCelCliente(dto.getCelCliente());
+        cliente.setEmailCliente(dto.getEmailCliente());
+        cliente.setNombreCliente(dto.getNombreCliente());
+        CatalogoGeneral catalogoGeneral = new CatalogoGeneral();
+        catalogoGeneral.setIdCatalogo(1);
+        cliente.setCatalogoGeneral(catalogoGeneral);
+        cliente.setFchCrea(new Date());
+        cliente.setUsrCrea("amaro");
+        cliente.setFnacCliente(new Date());
+        try{
+            Cliente saved = clienteDAO.save(cliente);
+            dto.setIdCliente(saved.getIdCliente());
+            return new ResponseEntity<>(dto, HttpStatus.CREATED);
+        }catch(Exception e){
+            log.error("Error en addCliente con mensaje: {}", e.getMessage());
+            log.error("Traza de error: {}", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/findAllByCel/{cel}", method = RequestMethod.GET
+                    , produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<List<ClienteDTO>> findAllByCel(@PathVariable String cel){
+        try{
+            List<Cliente> listClientes = clienteDAO.findAllByCelCliente(cel);
+            if(listClientes == null || listClientes.isEmpty()){
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            List<ClienteDTO> listDTO = new ArrayList<>();
+            for(Cliente c : listClientes){
+                ClienteDTO dto = new ClienteDTO();
+                dto.setApellidoMatCliente(c.getApellidoMatCliente());
+                dto.setApellidoPatCliente(c.getApellidoPatCliente());
+                dto.setCelCliente(c.getCelCliente());
+                dto.setEmailCliente(c.getEmailCliente());
+                dto.setIdCliente(c.getIdCliente());
+                dto.setNombreCliente(c.getNombreCliente());
+                listDTO.add(dto);
+            }
+            return new ResponseEntity<>(listDTO, HttpStatus.OK);
+        }catch(Exception e){
+            log.error("Error en findAllByCel con mensaje: {}", e.getMessage());
+            log.error("Traza: {}" , e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @RequestMapping(value = "/findAllByEmail/{email}", method = RequestMethod.GET
                     , produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<Cliente>> findAllByEmail(@PathVariable String email){
@@ -68,8 +127,8 @@ public class ClienteRestController {
         }
     }
 
-    @RequestMapping(value = "/findById/{id}")
-    public ResponseEntity<Cliente> findById(@PathVariable Integer id){
+    @RequestMapping(value = "/findById/{idPropio}", method = RequestMethod.GET)
+    public ResponseEntity<Cliente> findById(@PathVariable("idPropio") Integer id){
         try{
             Optional<Cliente> found = clienteDAO.findById(id);
             if(found.isPresent()){
@@ -91,10 +150,6 @@ public class ClienteRestController {
         try{
             List<Cliente> listaActivos = clienteDAO
                     .findAllByCatalogoGeneralIdCatalogo(idActivo);
-            for (Cliente c :
-                    listaActivos) {
-                log.info("Cliente: {}", c);
-            }
             if(listaActivos == null || listaActivos.isEmpty()){
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
@@ -104,14 +159,6 @@ public class ClienteRestController {
             log.error("Traza: {}", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-
-    @RequestMapping(value = "/add", method = RequestMethod.POST
-            , consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<ClienteDTO> save(@RequestBody ClienteDTO clienteDTO){
-
     }
 
 

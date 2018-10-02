@@ -13,14 +13,17 @@ public class Cliente {
     private String apellidoPatCliente;
     private String apellidoMatCliente;
     private String emailCliente;
-    private Date fnacCliente;
+    private java.util.Date fnacCliente;
     private String celCliente;
     private String usrCrea;
     private java.util.Date fchCrea;
     private String usrModi;
     private java.util.Date fchModi;
     private CatalogoGeneral catalogoGeneral;
+
     @Id
+    @SequenceGenerator(name="idClienteSeqGen", sequenceName = "cliente_id_cliente_seq", allocationSize = 1)
+    @GeneratedValue(generator = "idClienteSeqGen", strategy = GenerationType.SEQUENCE)
     @Column(name = "id_cliente")
     public int getIdCliente() {
         return idCliente;
@@ -71,12 +74,13 @@ public class Cliente {
     }
 
     @Basic
+    @Temporal(TemporalType.DATE)
     @Column(name = "fnac_cliente")
-    public Date getFnacCliente() {
+    public java.util.Date getFnacCliente() {
         return fnacCliente;
     }
 
-    public void setFnacCliente(Date fnacCliente) {
+    public void setFnacCliente(java.util.Date fnacCliente) {
         this.fnacCliente = fnacCliente;
     }
 
