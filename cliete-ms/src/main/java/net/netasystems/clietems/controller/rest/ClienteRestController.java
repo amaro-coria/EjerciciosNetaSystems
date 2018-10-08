@@ -13,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.ws.Response;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,10 +26,22 @@ public class ClienteRestController {
     private ClienteDAO clienteDAO;
     private static final Logger log = LoggerFactory.getLogger(ClienteRestController.class);
 
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<Integer> delete(@PathVariable Integer id){
+        try{
+            clienteDAO.deleteById(id);
+            return new ResponseEntity<>(id, HttpStatus.OK);
+        }catch(Exception e){
+            log.error("Error en delete con mensaje: {}", e.getMessage());
+            log.error("Traza: {}", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @RequestMapping(value = "/fetch",
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
             method = RequestMethod.GET)
-    public ResponseEntity<List<ClienteDTO>> fetchActiveCustomers(){
+    public ResponseEntity<List<ClienteDTO>> fetchAll(){
         try{
             List<Cliente> listaClientes = clienteDAO.findAll();
             if(listaClientes == null || listaClientes.isEmpty()){
@@ -53,6 +64,31 @@ public class ClienteRestController {
             log.error("Trace: ", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.PUT
+            , consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<ClienteDTO> updateCliente(@RequestBody ClienteDTO dto){
+        if(dto == null || dto.getIdCliente() == 0){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Optional<Cliente> clienteOrigenBaseDatos = clienteDAO.findById(dto.getIdCliente());
+        if(clienteOrigenBaseDatos.isPresent()){
+            Cliente clienteBD = clienteOrigenBaseDatos.get();
+            clienteBD.setNombreCliente(dto.getNombreCliente());
+            //todas las propiedades suceptibles a actualizacion
+            clienteBD.setFchModi(new Date());
+            clienteBD.setUsrModi("jorge");
+            try{
+                clienteDAO.save(clienteBD);
+                return new ResponseEntity<>(dto, HttpStatus.OK);
+            }catch (Exception e){
+                log.error("Error en updateCliente con mensaje: {}", e.getMessage());
+                log.error("Traza de error: {}", e);
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE

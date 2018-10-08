@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: CLIENTE-MS
+  cloud:
+    config:
+      uri: http://localhost:8888
